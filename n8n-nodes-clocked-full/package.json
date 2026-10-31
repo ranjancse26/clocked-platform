@@ -1,0 +1,35 @@
+{
+  "name": "n8n-nodes-clocked",
+  "version": "1.0.0",
+  "description": "n8n community node for Clocked by Rezolve.ai",
+  "license": "MIT",
+  "keywords": [
+    "n8n-community-node-package",
+    "clocked",
+    "rezolve.ai"
+  ],
+  "main": "dist/nodes/Clocked/Clocked.node.js",
+  "types": "dist/nodes/Clocked/Clocked.node.d.ts",
+ "scripts": {
+    "build": "tsc -p tsconfig.json && node -e \"const fs=require('fs');fs.mkdirSync('dist/nodes/Clocked',{recursive:true});fs.copyFileSync('nodes/Clocked/clocked.svg','dist/nodes/Clocked/clocked.svg')\"",
+    "dev": "tsc --watch -p tsconfig.json",
+    "lint": "eslint .",
+    "prepublishOnly": "npm run build"
+  },
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "credentials": [
+      "dist/credentials/ClockedApi.credentials.js"
+    ],
+    "nodes": [
+      "dist/nodes/Clocked/Clocked.node.js"
+    ]
+  },
+  "peerDependencies": {
+    "n8n-workflow": "*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.4.0"
+  }
+}

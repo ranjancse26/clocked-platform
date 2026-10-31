@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clocked Playground</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    /* --------------------------------------------------------------
+       Clocked Playground
+       -------------------------------------------------------------- */
+    :root {
+      --bg: #f3f5f9;
+      --card: #ffffff;
+      --text: #1e293b;
+      --text-strong: #0f172a;
+      --muted: #64748b;
+      --muted-light: #94a3b8;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --accent-light: #dbeafe;
+      --success: #059669;
+      --success-light: #d1fae5;
+      --danger: #dc2626;
+      --danger-light: #fee2e2;
+      --warning: #d97706;
+      --warning-light: #fef3c7;
+      --border: #e2e8f0;
+      --border-hover: #cbd5e1;
+      --radius: 14px;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    /* --------------------------------------------------------------
+       Layout
+       -------------------------------------------------------------- */
+    .shell {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .container {
+      flex: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem;
+    }
+
+    /* --------------------------------------------------------------
+       Header
+       -------------------------------------------------------------- */
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-core {
+      flex: 1;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin: 0 0 0.5rem;
+      color: var(--text-strong);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+    }
+
+    .header h1 .icon {
+      font-size: 2.1rem;
+    }
+
+    .header p {
+      color: var(--muted);
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .header .subtitle {
+      display: block;
+      margin-top: 0.25rem;
+      font-size: 0.875rem;
+      color: var(--muted-light);
+    }
+
+    /* --------------------------------------------------------------
+       Tabs
+       -------------------------------------------------------------- */
+    .tabs-wrapper {
+      display: flex;
+      gap: 0.375rem;
+      justify-content: center;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    .tabs-wrapper input[type="radio"] {
+      display: none;
+    }
+
+    .tab-label {
+      padding: 0.875rem 1.75rem;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius) var(--radius) 0 0;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 0.95rem;
+      color: var(--muted);
+      transition: var(--transition);
+      flex: 1;
+      text-align: center;
+      user-select: none;
+      position: relative;
+    }
+
+    .tab-label::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0));
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      pointer-events: none;
+    }
+
+    .tab-label:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+      border-bottom-color: transparent;
+    }
+
+    .tab-label:hover::before {
+      opacity: 1;
+    }
+
+    .tab-label.active {
+      background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+      border-color: var(--accent);
+      color: white;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+      border-bottom-color: transparent;
+    }
+
+    .tab-label.active::before {
+      display: none;
+    }
+
+    .tab-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--accent);
+      border-radius: 3px 3px 0 0;
+      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
+      pointer-events: none;
+    }
+
+    /* --------------------------------------------------------------
+       Tab panels
+       -------------------------------------------------------------- */
+    .tab-content {
+      display: none;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .tab-content.active {
+      display: block;
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* --------------------------------------------------------------
+       Playground panels
+       -------------------------------------------------------------- */
+    .playground {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      box-shadow: var(--shadow);
+      animation: fadeIn 0.35s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .panel h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin: 0 0 0.5rem;
+      color: var(--text-strong);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .panel h2 .tool-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 6px;
+      background: var(--accent-light);
+      color: var(--accent);
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .panel p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin: 0 0 1.25rem;
+    }
+
+    .example-note {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1rem;
+      background: var(--accent-light);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent-hover);
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .example-note:hover {
+      background: #bfdbfe;
+    }
+
+    .example-note svg {
+      width: 1rem;
+      height: 1rem;
+      flex-shrink: 0;
+    }
+
+    /* --------------------------------------------------------------
+       Form controls
+       -------------------------------------------------------------- */
+    form {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .form-group {
+      margin: 0;
+      display: grid;
+      gap: 0.5rem;
+    }
+
+    .form-group label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 500;
+      font-size: 0.875rem;
+      color: var(--text-strong);
+    }
+
+    .form-group label .req {
+      color: var(--danger);
+      font-size: 0.875rem;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 0.875rem 1rem;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 0.925rem;
+      color: var(--text-strong);
+      transition: var(--transition);
+      resize: vertical;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+      background: white;
+    }
+
+    .form-group textarea {
+      min-height: 130px;
+      font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+      font-size: 0.875rem;
+      line-height: 1.55;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .form-row .form-group {
+      margin-bottom: 0;
+    }
+
+    .button-group {
+      display: grid;
+      gap: 0.75rem;
+      grid-template-columns: 1fr;
+      margin-top: 0.5rem;
+    }
+
+    .button-group.two-col {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    button {
+      font-family: 'Inter', system-ui, sans-serif;
+      border-radius: 10px;
+      font-weight: 500;
+      font-size: 0.925rem;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      border: none;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+      color: white;
+      padding: 0.95rem 1.5rem;
+      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 14px rgba(37, 99, 235, 0.4);
+    }
+
+    .btn-primary:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      background: #f1f5f9;
+      color: var(--text-strong);
+      border: 1px solid var(--border);
+      padding: 0.95rem 1.25rem;
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background: #e2e8f0;
+      border-color: var(--border-hover);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--muted);
+      border: 1px dashed var(--border);
+      padding: 0.95rem 1.25rem;
+    }
+
+    .btn-outline:hover:not(:disabled) {
+      background: #f8fafc;
+      border-style: solid;
+      color: var(--text-strong);
+    }
+
+    .btn-danger {
+      background: var(--danger-light);
+      color: var(--danger);
+      border: 1px solid var(--danger);
+      padding: 0.75rem 1rem;
+      font-size: 0.875rem;
+    }
+
+    .btn-danger:hover:not(:disabled) {
+      background: var(--danger);
+      color: white;
+    }
+
+    .btn-sm {
+      padding: 0.6rem 0.9rem;
+      font-size: 0.85rem;
+    }
+
+    .token-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .token-input {
+      width: 100%;
+      padding: 0.875rem 1rem;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+      font-size: .875rem;
+      color: var(--text-strong);
+      transition: var(--transition);
+    }
+
+    .token-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+      background: white;
+    }
+
+    .token-input::placeholder {
+      color: var(--muted-light);
+    }
+
+    /* --------------------------------------------------------------
+       Response area
+       -------------------------------------------------------------- */
+    .response-area {
+      margin-top: 1rem;
+      padding: 0;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      display: none;
+      box-shadow: var(--shadow);
+      animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .response-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.875rem 1.25rem;
+      background: #f8fafc;
+      border-bottom: 1px solid var(--border);
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+
+    .response-bar h3 {
+      margin: 0;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-strong);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .response-bar h3 .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      flex-shrink: 0;
+    }
+
+    .response-bar h3.error .dot {
+      background: var(--danger);
+    }
+
+    .response-bar h3.pending .dot {
+      background: var(--warning);
+    }
+
+    .response-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .response-body {
+      padding: 1.25rem;
+      overflow: auto;
+      max-height: 340px;
+    }
+
+    .response-body pre {
+      margin: 0;
+      font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+      font-size: 0.825rem;
+      line-height: 1.5;
+      color: var(--text-strong);
+    }
+
+    .response-body .json-key {
+      color: #1e6fdc;
+    }
+
+    .response-body .json-str {
+      color: #059669;
+    }
+
+    .response-body .json-bool {
+      color: #7c3aed;
+    }
+
+    .response-body .json-num {
+      color: #c0563a;
+    }
+
+    .response-body .json-null {
+      color: #888;
+    }
+
+    .error-body {
+      color: var(--danger);
+      background: var(--danger-light);
+      padding: 1.25rem;
+      border-radius: 0 0 var(--radius) var(--radius);
+    }
+
+    .error-body pre {
+      margin: 0;
+      font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+      font-size: 0.825rem;
+    }
+
+    /* --------------------------------------------------------------
+       Loading spinner
+       -------------------------------------------------------------- */
+    .loading {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.9rem;
+      color: var(--muted);
+      padding: 0.75rem;
+    }
+
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* --------------------------------------------------------------
+       Footer
+       -------------------------------------------------------------- */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 1.75rem 1.5rem;
+      text-align: center;
+      background: var(--card);
+    }
+
+    footer p {
+      margin: 0;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    /* --------------------------------------------------------------
+       Responsive
+       -------------------------------------------------------------- */
+    @media (max-width: 768px) {
+      .container {
+        padding: 1.5rem 1rem;
+      }
+
+      .header h1 {
+        font-size: 1.6rem;
+        flex-direction: column;
+        gap: 0.35rem;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .button-group.two-col {
+        grid-template-columns: 1fr;
+      }
+
+      .tab-label {
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+      }
+
+      .tabs-wrapper {
+        flex-wrap: wrap;
+      }
+    }
+
+    /* --------------------------------------------------------------
+       Syntax highlighting helpers (lightweight)
+       -------------------------------------------------------------- */
+    .hl-key { color: #1e6fdc; font-weight: 600; }
+    .hl-str { color: #059669; }
+    .hl-bool { color: #7c3aed; }
+    .hl-num { color: #c0563a; }
+    .hl-null { color: #888; }
+
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      padding: 0.5rem 1rem;
+      background: #edf2f7;
+      border: 1px solid #cbd2d9;
+      border-radius: 6px;
+      color: #2d3748;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="shell">
+    <div class="container">
+      <!-- Header -->
+      <header class="header">
+        <button type="button" class="back-button" onclick="goBack()" aria-label="Back to docs">
+          ← Back to docs
+        </button>
+        <div class="header-core">
+          <h1><span class="icon"></span>Clocked Playground</h1>
+          <p>Test the <code>clocked_fill</code>, <code>clocked_extract</code>, and <code>clocked_decide</code> tools directly from your browser.</p>
+          <span class="subtitle">Powered by the Clocked MCP Server. REST endpoints: <code>/api/fill</code>, <code>/api/extract</code>, <code>/api/decide</code></span>
+        </div>
+      </header>
+
+      <!-- Tabs Navigation -->
+      <div class="tabs-wrapper">
+        <input type="radio" name="playground-tab" id="tab-fill" checked>
+        <input type="radio" name="playground-tab" id="tab-extract">
+        <input type="radio" name="playground-tab" id="tab-decide">
+
+        <label for="tab-fill" class="tab-label active">Clocked Fill</label>
+        <label for="tab-extract" class="tab-label">Clocked Extract</label>
+        <label for="tab-decide" class="tab-label">Clocked Decide</label>
+
+        <div class="tab-bar"></div>
+      </div>
+
+      <!-- Playground Panels -->
+      <section class="playground">
+
+        <!-- ============ Clocked Fill ============ -->
+        <div id="tab-fill-content" class="tab-content active">
+          <div class="panel">
+            <h2>Clocked Fill</h2>
+            <p>Extract, classify, score, or generate structured fields from source text.</p>
+
+            <div class="example-note" onclick="loadFillExample()" role="button" tabindex="0">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+              Load example payload
+            </div>
+
+            <form id="fillForm">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Source text <span class="req">*</span></label>
+                  <textarea id="textInp" rows="6" placeholder="Paste incident report, email, or document text here…"></textarea>
+                </div>
+                <div class="form-group">
+                  <label>Instructions (optional)</label>
+                  <textarea id="instrInp" rows="6" placeholder="Severity rubric, extraction rules, etc."></textarea>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Fields schema (optional JSON)</label>
+                  <textarea id="fieldsInp" rows="8" placeholder='{"incident_id": {"type": "extract", "description": "The incident ID"}, "severity": {"type": "score", "levels": ["Low","Medium","High","Critical"]}}'></textarea>
+                </div>
+                <div class="form-group" style="display:flex; align-items:flex-end;">
+                  <button type="button" class="btn-outline btn-sm" onclick="validateJson('fieldsInp', 'fillValidateMsg')">Validate JSON</button>
+                  <span id="fillValidateMsg" style="font-size:0.8rem; color:var(--muted); margin-left:0.5rem;"></span>
+                </div>
+              </div>
+
+              <div class="token-group">
+                <label style="font-size:0.85rem;">Bearer token (optional)</label>
+                <input id="tokenInp" type="text" class="token-input" placeholder="MCP_ACCESS_TOKEN value (only if server requires auth)">
+              </div>
+
+              <div class="button-group">
+                <button type="submit" class="btn-primary" id="fillSubmitBtn">
+                  <span class="spinner" id="fillSpinner" style="display:none;"></span>
+                  <span id="fillBtnText">Run Fill</span>
+                </button>
+              </div>
+            </form>
+
+            <div id="fillResponseArea" class="response-area">
+              <div class="response-bar">
+                <h3><span class="dot"></span> Fill Response</h3>
+                <div class="response-actions">
+                  <button type="button" class="btn-sm btn-secondary" onclick="copyResponse('fillResponseBody')">Copy</button>
+                </div>
+              </div>
+              <div id="fillResponseBody" class="response-body"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============ Clocked Extract ============ -->
+        <div id="tab-extract-content" class="tab-content">
+          <div class="panel">
+            <h2>Clocked Extract</h2>
+            <p>Extract structured data from source text based on the provided fields definitions.</p>
+
+            <div class="example-note" onclick="loadExtractExample()" role="button" tabindex="0">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+              Load example payload
+            </div>
+
+            <form id="extractForm">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Source text <span class="req">*</span></label>
+                  <textarea id="extractTextInp" rows="6" placeholder="Paste onboarding notes, résumé, or document text here…"></textarea>
+                </div>
+                <div class="form-group">
+                  <label>Instructions (optional)</label>
+                  <textarea id="extractInstrInp" rows="6" placeholder="Extraction rules and preferences…"></textarea>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Fields schema (optional JSON)</label>
+                  <textarea id="extractFieldsInp" rows="8" placeholder='{"employee": "Current starter full name", "role": "Job title", "start_date": "Start date"}'></textarea>
+                </div>
+                <div class="form-group" style="display:flex; align-items:flex-end;">
+                  <button type="button" class="btn-outline btn-sm" onclick="validateJson('extractFieldsInp', 'extractValidateMsg')">Validate JSON</button>
+                  <span id="extractValidateMsg" style="font-size:0.8rem; color:var(--muted); margin-left:0.5rem;"></span>
+                </div>
+              </div>
+
+              <div class="token-group">
+                <label style="font-size:0.85rem;">Bearer token (optional)</label>
+                <input id="extractTokenInp" type="text" class="token-input" placeholder="MCP_ACCESS_TOKEN value">
+              </div>
+
+              <div class="button-group">
+                <button type="submit" class="btn-primary" id="extractSubmitBtn">
+                  <span class="spinner" id="extractSpinner" style="display:none;"></span>
+                  <span id="extractBtnText">Run Extract</span>
+                </button>
+              </div>
+            </form>
+
+            <div id="extractResponseArea" class="response-area">
+              <div class="response-bar">
+                <h3><span class="dot"></span> Extract Response</h3>
+                <div class="response-actions">
+                  <button type="button" class="btn-sm btn-secondary" onclick="copyResponse('extractResponseBody')">Copy</button>
+                </div>
+              </div>
+              <div id="extractResponseBody" class="response-body"></div>
+            </div>
+          </div>
+        </div>
+        <!-- ============ Clocked Decide ============ -->
+        <div id="tab-decide-content" class="tab-content">
+          <div class="panel">
+            <h2>Clocked Decide</h2>
+            <p>Make decisions based on incident state, instructions, and defined questions.</p>
+
+            <div class="example-note" onclick="loadDecideExample()" role="button" tabindex="0">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+              Load example payload
+            </div>
+
+            <form id="decideForm">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Source state <span class="req">*</span></label>
+                  <textarea id="decideTextInp" rows="6" placeholder="Paste incident post-mortem, status report, or decision context here…"></textarea>
+                </div>
+                <div class="form-group">
+                  <label>Instructions (optional)</label>
+                  <textarea id="decideInstrInp" rows="6" placeholder="Decision criteria and constraints…"></textarea>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Questions schema (optional JSON)</label>
+                  <textarea id="decideQuestionsInp" rows="8" placeholder='{"approve": {"type": "choice", "description": "Approve?", "options": ["Yes","No"]}, "priority": {"type": "score", "levels": ["Low","Medium","High","Critical"]}}'></textarea>
+                </div>
+                <div class="form-group" style="display:flex; align-items:flex-end;">
+                  <button type="button" class="btn-outline btn-sm" onclick="validateJson('decideQuestionsInp', 'decideValidateMsg')">Validate JSON</button>
+                  <span id="decideValidateMsg" style="font-size:0.8rem; color:var(--muted); margin-left:0.5rem;"></span>
+                </div>
+              </div>
+
+              <div class="token-group">
+                <label style="font-size:0.85rem;">Bearer token (optional)</label>
+                <input id="decideTokenInp" type="text" class="token-input" placeholder="MCP_ACCESS_TOKEN value">
+              </div>
+
+              <div class="button-group">
+                <button type="submit" class="btn-primary" id="decideSubmitBtn">
+                  <span class="spinner" id="decideSpinner" style="display:none;"></span>
+                  <span id="decideBtnText">Run Decide</span>
+                </button>
+              </div>
+            </form>
+
+            <div id="decideResponseArea" class="response-area">
+              <div class="response-bar">
+                <h3><span class="dot"></span> Decide Response</h3>
+                <div class="response-actions">
+                  <button type="button" class="btn-sm btn-secondary" onclick="copyResponse('decideResponseBody')">Copy</button>
+                </div>
+              </div>
+              <div id="decideResponseBody" class="response-body"></div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+    </div>
+
+    <footer>
+      <p>Clocked MCP Server v1.0.0</p>
+    </footer>
+  </div>
+
+  <script>
+    /* --------------------------------------------------------------
+       Example payloads
+       -------------------------------------------------------------- */
+    const EXAMPLE_TEXT_FILL = `INC-8421 - 8 October 2026, 10:15
+From: Maya Chen, Payroll Operations
+The payroll portal is unavailable for all 18 members of the payroll team. The page shows 'SSO authentication failed'. We cannot submit this month's payroll; the bank cutoff is 14:00 today. There is no workaround. Other departments can still use the intranet. Assigned engineer: Arjun Shah. Arjun proposed rolling back this morning's identity configuration change. The change manager has not approved that rollback yet. No restoration estimate is available.`;
+
+    const EXAMPLE_INSTRUCTIONS_FILL = `Severity rubric: Low = routine request with no service impact; Medium = degraded work with a usable workaround; High = work blocked for a team without a usable workaround; Critical = a company-wide service outage. Major-incident criteria: a company-wide outage OR a business-critical team blocked without a workaround while a stated same-day deadline is at risk. Approval must be explicit. Use only this report; leave extracted details blank when absent. Generated updates must distinguish known facts from unknowns.`;
+
+    const EXAMPLE_FIELDS_FILL = {
+      incident_id: {
+        type: 'extract',
+        description: 'The incident or ticket identifier',
+        infer: false
+      },
+      severity: {
+        type: 'score',
+        description: 'Urgency level',
+        levels: ['Low', 'Medium', 'High', 'Critical']
+      },
+      affected_team: {
+        type: 'extract',
+        description: 'Team impacted by the incident'
+      },
+      assigned_engineer: {
+        type: 'extract',
+        description: 'Engineer assigned to resolve the incident'
+      },
+      workaround_available: {
+        type: 'choice',
+        description: 'Is there a usable workaround?',
+        options: ['Yes', 'No']
+      }
+    };
+
+    const EXAMPLE_TEXT_EXTRACT = `NEW EMPLOYEE ONBOARDING - People Operations
+Candidate: Amina Rahman
+Personal contact: amina.rahman@example.com
+Role: Senior Financial Analyst
+Office: Manchester
+Start date: 19 October 2026
+Equipment requested: ThinkPad T14, USB-C dock, two 27-inch monitors.
+
+Onboarding checklist:
+- [ ] Contract signed
+- [ ] IT equipment ordered
+- [ ] Email account created
+- [ ] Building access granted
+- [ ] Line manager: Elena Costa assigned
+
+Please process this new starter request.`;
+
+    const EXAMPLE_INSTRUCTIONS_EXTRACT = `Read the current starter Amina Rahman. Prefer explicit corrections over original values. Do not borrow details from previous starters. Keep values verbatim. Extract only the fields specified in the schema. Return empty strings for any missing fields.`;
+
+    const EXAMPLE_FIELDS_EXTRACT = {
+      employee: 'Current starter full name',
+      role: 'Current starter job title',
+      start_date: 'Revised start date of the current starter',
+      office: 'Office location of the current starter',
+      equipment: {
+        description: 'Individual equipment items requested for the current starter',
+        list: true,
+        max_items: 6
+      },
+      manager: 'Assigned line manager of the current starter; empty if not assigned'
+    };
+
+    const EXAMPLE_TEXT_DECIDE = `The entire finance team loses its VPN connection every five minutes. Payroll must be submitted today. There is no workaround. The manager approved an emergency network change.`;
+
+    const EXAMPLE_INSTRUCTIONS_DECIDE = `Urgent means a team is blocked against a same-day business deadline without a workaround. Count approval only when it is explicitly stated.`;
+
+    const EXAMPLE_QUESTIONS_DECIDE = {
+      approved: {
+        type: 'noul',
+        instructions: 'Has the manager approved the emergency change?',
+        threshold: 0.75
+      },
+      route: {
+        type: 'choice',
+        instructions: 'Which team should own the issue?',
+        criteria: {
+          network: 'VPN and connectivity',
+          hardware: 'Physical devices',
+          identity: 'Password or account problems'
+        }
+      },
+      impacts: {
+        type: 'multiselect',
+        instructions: 'Which impacts are explicitly present?',
+        criteria: {
+          team_blocked: 'Multiple people cannot work normally.',
+          deadline: 'A business deadline is at risk today.',
+          data_loss: 'Files or records have been lost.'
+        },
+        threshold: 0.65
+      },
+      priority: {
+        type: 'score',
+        instructions: 'Rate the incident priority.',
+        criteria: [
+          'Low: routine request',
+          'Medium: one person affected with a workaround',
+          'High: a team blocked with a same-day deadline'
+        ]
+      }
+    };
+
+    /* --------------------------------------------------------------
+       Tab handling
+       -------------------------------------------------------------- */
+    document.addEventListener('DOMContentLoaded', () => {
+      const radios = {
+        fill: document.getElementById('tab-fill'),
+        extract: document.getElementById('tab-extract'),
+        decide: document.getElementById('tab-decide')
+      };
+      const panels = {
+        fill: document.getElementById('tab-fill-content'),
+        extract: document.getElementById('tab-extract-content'),
+        decide: document.getElementById('tab-decide-content')
+      };
+      const labels = document.querySelectorAll('.tab-label');
+
+      function selectTab(tabId) {
+        Object.values(radios).forEach(r => (r.checked = false));
+        radios[tabId].checked = true;
+        Object.entries(panels).forEach(([key, p]) => {
+          p.classList.toggle('active', key === tabId);
+        });
+        labels.forEach(label => {
+          label.classList.toggle('active', label.htmlFor === `tab-${tabId}`);
+        });
+      }
+
+      labels.forEach(label => {
+        label.addEventListener('click', () => {
+          if (label.htmlFor === 'tab-fill') { selectTab('fill'); loadFillExample(); }
+          if (label.htmlFor === 'tab-extract') { selectTab('extract'); loadExtractExample(); }
+          if (label.htmlFor === 'tab-decide') { selectTab('decide'); loadDecideExample(); }
+        });
+      });
+
+      selectTab('fill');
+
+      // Wire up all three forms
+      setupForm('fillForm', '/api/fill', 'fillResponseArea', 'fillResponseBody', 'fillSpinner', 'fillBtnText', 'fillSubmitBtn');
+      setupForm('extractForm', '/api/extract', 'extractResponseArea', 'extractResponseBody', 'extractSpinner', 'extractBtnText', 'extractSubmitBtn');
+      setupForm('decideForm', '/api/decide', 'decideResponseArea', 'decideResponseBody', 'decideSpinner', 'decideBtnText', 'decideSubmitBtn');
+
+      // Auto-load fill example on first visit
+      loadFillExample();
+    });
+
+    /* --------------------------------------------------------------
+       Load example into a tab
+       -------------------------------------------------------------- */
+    function loadFillExample() {
+      document.getElementById('textInp').value = EXAMPLE_TEXT_FILL;
+      document.getElementById('instrInp').value = EXAMPLE_INSTRUCTIONS_FILL;
+      document.getElementById('fieldsInp').value = JSON.stringify(EXAMPLE_FIELDS_FILL, null, 2);
+      setValidateMsg('fillValidateMsg', 'Ready to run.', 'success');
+    }
+
+    function loadExtractExample() {
+      document.getElementById('extractTextInp').value = EXAMPLE_TEXT_EXTRACT;
+      document.getElementById('extractInstrInp').value = EXAMPLE_INSTRUCTIONS_EXTRACT;
+      document.getElementById('extractFieldsInp').value = JSON.stringify(EXAMPLE_FIELDS_EXTRACT, null, 2);
+      setValidateMsg('extractValidateMsg', 'Ready to run.', 'success');
+    }
+
+    function loadDecideExample() {
+      document.getElementById('decideTextInp').value = EXAMPLE_TEXT_DECIDE;
+      document.getElementById('decideInstrInp').value = EXAMPLE_INSTRUCTIONS_DECIDE;
+      document.getElementById('decideQuestionsInp').value = JSON.stringify(EXAMPLE_QUESTIONS_DECIDE, null, 2);
+      setValidateMsg('decideValidateMsg', 'Ready to run.', 'success');
+    }
+
+    /* --------------------------------------------------------------
+       JSON validation helper
+       -------------------------------------------------------------- */
+    function validateJson(textareaId, msgId) {
+      const el = document.getElementById(textareaId);
+      const value = el.value.trim();
+      const msgEl = document.getElementById(msgId);
+      if (!value) {
+        setValidateMsg(msgId, 'No JSON entered.', 'danger');
+        return false;
+      }
+      try {
+        JSON.parse(value);
+        setValidateMsg(msgId, 'Valid JSON.', 'success');
+        return true;
+      } catch (e) {
+        setValidateMsg(msgId, 'Invalid JSON: ' + e.message, 'danger');
+        return false;
+      }
+    }
+
+    function setValidateMsg(msgId, text, kind) {
+      const el = document.getElementById(msgId);
+      el.textContent = text;
+      el.style.color = kind === 'success' ? 'var(--success)' : kind === 'danger' ? 'var(--danger)' : 'var(--muted)';
+    }
+
+    /* --------------------------------------------------------------
+       Generic form submission handler
+       -------------------------------------------------------------- */
+    function setupForm(formId, endpoint, responseAreaId, responseBodyId, spinnerId, btnTextId, submitBtnId) {
+      const form = document.getElementById(formId);
+      const responseArea = document.getElementById(responseAreaId);
+      const responseBody = document.getElementById(responseBodyId);
+      const spinner = document.getElementById(spinnerId);
+      const btnText = document.getElementById(btnTextId);
+      const submitBtn = document.getElementById(submitBtnId);
+
+      if (!form) return;
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        // Determine field names per endpoint
+        const isDecide = endpoint === '/api/decide';
+        const textField = isDecide ? 'decideTextInp' : (endpoint === '/api/extract' ? 'extractTextInp' : 'textInp');
+        const instrField = isDecide ? 'decideInstrInp' : (endpoint === '/api/extract' ? 'extractInstrInp' : 'instrInp');
+        const schemaField = isDecide ? 'decideQuestionsInp' : (endpoint === '/api/extract' ? 'extractFieldsInp' : 'fieldsInp');
+        const tokenField = isDecide ? 'decideTokenInp' : (endpoint === '/api/extract' ? 'extractTokenInp' : 'tokenInp');
+
+        const text = document.getElementById(textField).value.trim();
+        const instructions = document.getElementById(instrField).value.trim();
+        const schemaRaw = document.getElementById(schemaField).value.trim();
+        const token = document.getElementById(tokenField).value.trim();
+
+        // Basic validation
+        if (!text) {
+          alert('Source text / state is required.');
+          return;
+        }
+
+        // Parse optional JSON schema
+        let schema = {};
+        if (schemaRaw) {
+          try {
+            schema = JSON.parse(schemaRaw);
+          } catch (err) {
+            alert('Invalid JSON in schema field.');
+            return;
+          }
+        }
+
+        // Build body (matching server expectations)
+        const body = {
+          text,
+          ...(instructions ? { instructions } : {}),
+          ...(isDecide ? { questions: schema } : { fields: schema }),
+          request_id: crypto.randomUUID()
+        };
+
+        const headers = { 'Content-Type': 'application/json', Accept: 'application/json' };
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+
+        // UI: loading state
+        setLoading(true, spinner, btnText, submitBtn);
+        hideResponse(responseArea);
+        responseBody.innerHTML = '';
+
+        try {
+          const res = await fetch(endpoint, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify(body)
+          });
+
+          const responseText = await res.text();
+
+          if (!res.ok) {
+            showError(responseArea, responseBody, `HTTP ${res.status}: ${escapeHtml(responseText) || 'Request failed'}`);
+            return;
+          }
+
+          // Try to render as JSON, fall back to raw text
+          let rendered;
+          try {
+            const parsed = JSON.parse(responseText);
+            rendered = renderJson(parsed);
+          } catch {
+            rendered = `<pre class="json-response">${escapeHtml(responseText)}</pre>`;
+          }
+
+          showSuccess(responseArea, responseBody, rendered);
+        } catch (err) {
+          showError(responseArea, responseBody, `Network error: ${escapeHtml(err.message)}`);
+        } finally {
+          setLoading(false, spinner, btnText, submitBtn);
+        }
+      });
+    }
+
+    /* --------------------------------------------------------------
+       UI helpers
+       -------------------------------------------------------------- */
+    function setLoading(loading, spinner, btnText, btn) {
+      spinner.style.display = loading ? 'inline-block' : 'none';
+      btn.disabled = loading;
+      btnText.textContent = loading ? 'Running…' : btn.dataset.originalText || 'Run';
+      if (!btn.dataset.originalText) btn.dataset.originalText = btnText.textContent;
+    }
+
+    function hideResponse(area) {
+      area.style.display = 'none';
+      area.className = 'response-area';
+    }
+
+    function showSuccess(area, body, html) {
+      body.innerHTML = html;
+      area.style.display = 'block';
+      area.className = 'response-area';
+      const dot = area.querySelector('.dot');
+      if (dot) dot.className = 'dot';
+      const h3 = area.querySelector('h3');
+      if (h3) h3.className = '';
+    }
+
+    function showError(area, body, message) {
+      body.innerHTML = `<div class="error-body"><pre>${message}</pre></div>`;
+      area.style.display = 'block';
+      area.className = 'response-area';
+      const dot = area.querySelector('.dot');
+      if (dot) dot.classList.add('error');
+      const h3 = area.querySelector('h3');
+      if (h3) h3.classList.add('error');
+    }
+
+    function goBack() {
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.location.href = 'index.html';
+      }
+    }
+
+    function copyResponse(bodyId) {
+      const body = document.getElementById(bodyId);
+      if (!body) return;
+      const text = body.innerText || body.textContent || '';
+      if (!text) return;
+      navigator.clipboard.writeText(text).then(() => {
+      });
+      const btn = document.querySelector(`button[onclick="copyResponse('${bodyId}')"]`);
+      const original = btn.textContent;
+      btn.textContent = 'Copied!';
+      btn.style.color = 'var(--success)';
+      setTimeout(() => {
+        btn.textContent = original;
+        btn.style.color = '';
+      }, 1200);
+    }
+
+    /* --------------------------------------------------------------
+       Render JSON with lightweight syntax highlighting
+       -------------------------------------------------------------- */
+    function renderJson(value) {
+      const json = JSON.stringify(value, null, 2);
+      const highlighted = json
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"(?:\\.|[^"\\])*"|(\d+(?:\.\d+)?)|(true|false|null)/g, (m, num, lit) => {
+          if (num) return `<span class="hl-num">${escapeHtml(num)}</span>`;
+          if (lit === 'true' || lit === 'false') return `<span class="hl-bool">${escapeHtml(lit)}</span>`;
+          if (lit === 'null') return `<span class="hl-null">${escapeHtml(lit)}</span>`;
+          return `<span class="hl-str">${escapeHtml(m)}</span>`;
+        })
+        .replace(/("[^"]+"):/g, '<span class="hl-key">$1</span>:');
+
+      return `<pre class="json-response">${highlighted}</pre>`;
+    }
+
+    function escapeHtml(text) {
+      return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+  </script>
+</body>
+
+</html>

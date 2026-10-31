@@ -1,0 +1,21 @@
+{
+  "name": "Clocked Extract Example - Employee Onboarding",
+  "description": "Extract structured data from starter onboarding text using the Clocked Extract API",
+  "mode": "production",
+  "parameters": {
+    "text": "NEW STARTER · People Operations\nCandidate: Amina Rahman\nPersonal contact: amina.rahman@example.com\nRole: Senior Financial Analyst\nOffice: Manchester\nOriginal start date: 19 October 2026\nEquipment requested: ThinkPad T14, USB-C dock, two 27-inch monitors.\n\nUPDATE from People Operations, 8 October 2026:\nAmina has accepted a revised start date of 2 November 2026. The role and office are unchanged. Please use the revised date for provisioning. The line manager has not yet been assigned.\n\nPrevious starter, for reference only: Luca Moretti; start date 12 October 2026; manager Elena Costa.",
+    "instructions": "Read the current starter Amina Rahman. Prefer explicit corrections over original values. Do not borrow details from the previous starter. Keep values verbatim.",
+    "fields": {
+      "employee": "Current starter full name",
+      "role": "Current starter job title",
+      "start_date": "Revised start date of the current starter",
+      "office": "Office location of the current starter",
+      "equipment": {
+        "description": "Individual equipment items requested for the current starter",
+        "list": true,
+        "max_items": 6
+      },
+      "manager": "Assigned line manager of the current starter; empty if not assigned"
+    }
+  }
+}

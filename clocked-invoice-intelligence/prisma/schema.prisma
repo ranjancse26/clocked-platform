@@ -1,0 +1,52 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Invoice {
+  id                 String   @id @default(cuid())
+  filename           String
+  mimeType           String
+  fileHash           String
+  storagePath        String
+  status             String   @default("uploaded")
+  vendorName         String?
+  invoiceNumber      String?
+  invoiceDate        String?
+  dueDate             String?
+  currencyCode       String?
+  subtotalMinor      Int?
+  taxMinor           Int?
+  totalMinor         Int?
+  extractedJson      Json?
+  parsedMarkdown     String?  @db.Text
+  validationJson     Json?
+  decisionJson       Json?
+  resultJson         Json?
+  errorMessage       String?  @db.Text
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  runs               ProcessingRun[]
+
+  @@index([fileHash])
+  @@index([vendorName, invoiceNumber])
+  @@index([createdAt])
+}
+
+model ProcessingRun {
+  id            String   @id @default(cuid())
+  invoiceId     String
+  stage         String
+  status        String
+  message       String?
+  details       Json?
+  startedAt     DateTime @default(now())
+  completedAt   DateTime?
+  invoice       Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  @@index([invoiceId, startedAt])
+}

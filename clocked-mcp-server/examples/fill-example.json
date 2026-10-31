@@ -1,0 +1,24 @@
+{
+  "name": "Clocked Fill Example - Employee Onboarding Documentation",
+  "description": "Fill/generate onboarding documentation using the Clocked Fill API with extracted employee data",
+  "mode": "production",
+
+  "parameters": {
+    "text": "NEW STARTER · People Operations\nCandidate: {{employee}}\nPersonal contact: {{contact}}\nRole: {{role}}\nOffice: {{office}}\nOriginal start date: {{original_start_date}}\nEquipment requested: {{equipment_description}}.\n\nUPDATE from People Operations:\n{{employee}} has accepted a revised start date of {{start_date}}. The role and office are unchanged. Please use the revised date for provisioning. The line manager has {{manager_status}} assigned.\n\nPrevious starter, for reference only: {{previous_starter}}; start date {{previous_start_date}}; manager {{previous_manager}}.",
+
+    "fields": {
+      "employee": "Current starter full name",
+      "role": "Current starter job title",
+      "start_date": "Revised start date of the current starter",
+      "office": "Office location of the current starter",
+      "equipment_description": "Individual equipment items requested for the current starter",
+      "manager": "Assigned line manager of the current starter; empty if not assigned",
+      "manager_status": "Status of manager assignment (e.g., 'not yet')",
+      "contact": "Personal contact email of the current starter",
+      "original_start_date": "Original start date before revision",
+      "previous_starter": "Name of the previous starter for reference",
+      "previous_start_date": "Start date of the previous starter",
+      "previous_manager": "Name of the previous starter's manager"
+    }
+  }
+}

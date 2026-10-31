@@ -1,0 +1,45 @@
+{
+  "name": "Clocked Decide Example - Incident Priority",
+  "description": "Make decisions about incident priority using the Clocked Decide API",
+  "mode": "production",
+
+  "parameters": {
+    "state": "The entire finance team loses its VPN connection every five minutes. Payroll must be submitted today. There is no workaround. The manager approved an emergency network change.",
+    "instructions": "Urgent means a team is blocked against a same-day business deadline without a workaround. Count approval only when it is explicitly stated.",
+    "questions": {
+      "approved": {
+        "type": "noul",
+        "instructions": "Has the manager approved the emergency change?",
+        "threshold": 0.75
+      },
+      "route": {
+        "type": "choice",
+        "instructions": "Which team should own the issue?",
+        "criteria": {
+          "network": "VPN and connectivity",
+          "hardware": "Physical devices",
+          "identity": "Password or account problems"
+        }
+      },
+      "impacts": {
+        "type": "multiselect",
+        "instructions": "Which impacts are explicitly present?",
+        "criteria": {
+          "team_blocked": "Multiple people cannot work normally.",
+          "deadline": "A business deadline is at risk today.",
+          "data_loss": "Files or records have been lost."
+        },
+        "threshold": 0.65
+      },
+      "priority": {
+        "type": "score",
+        "instructions": "Rate the incident priority.",
+        "criteria": [
+          "Low: routine request",
+          "Medium: one person affected with a workaround",
+          "High: a team blocked with a same-day deadline"
+        ]
+      }
+    }
+  }
+}
